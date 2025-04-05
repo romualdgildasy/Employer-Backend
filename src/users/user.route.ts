@@ -1,48 +1,45 @@
-import { Request, Response, Router} from 'express'
-import { users as userList } from "./users";
+import { Request, Response, Router } from 'express';
+import { users as userList } from './users';
 
 let users = [...userList];
 
 export const userRouter = Router();
 
-//localhost:3000/users ?departement= "" pour trouver a quel departement appartient un user
-userRouter.get("/", (req: Request, res: Response)=>{
-    const  {departement} = req.query; 
-    if(departement)
-    {
-        res.json (users.filter(user =>user.departement.toLowerCase() === (departement as string).toLowerCase()));
+// localhost:3000/users?departement="" pour trouver à quel département appartient un user
+userRouter.get("/", (req: Request, res: Response) => {
+    const { departement } = req.query;
+    if (departement) {
+        const filteredUsers = users.filter(user =>
+            user.departement.toLowerCase() === (departement as string).toLowerCase()
+        );
+        return res.json(filteredUsers); // renvoyer et sortir ici
     }
 
-    res.json(users)
+    return res.json(users); // renvoyer toute la liste si aucun département n'est spécifié
 });
 
-//locahost:3000/getUers by Id
-userRouter.get("/:userId", (req: Request, res: Response)=>{
-    const {userId} = req.params;
-    const user = users.find(user => user.id === userId);            
-    if(user){
-    res.json(user)
-    }
-        res.status(404);
-        res.json({message: "User not found"})       
-    
-    }
-);
+// localhost:3000/users/:userId pour obtenir un utilisateur par ID
+userRouter.get("/:userId", (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const user = users.find(user => user.id === userId);
 
-//Delete
-userRouter.delete("/:userId", (req: Request, res: Response)=>{
-    const {userId} = req.params;
-    const user = users.find((user) => user.id === userId);            
-    if(!user){
-        res.status(404);
-        res.send()
-    }  
+    if (user) {
+        return res.json(user); // retourner directement si trouvé
+    }
+
+    return res.status(404).json({ message: "User not found" }); // renvoyer 404 si non trouvé
+});
+
+// Supprimer un utilisateur par ID
+userRouter.delete("/:userId", (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const user = users.find((user) => user.id === userId);
+
+    if (!user) {
+        return res.status(404).json({ message: "User not found" }); // Retourner une erreur 404 si l'utilisateur n'est pas trouvé
+    }
+
     users = users.filter((user) => user.id !== userId);
-    res.status(204);
-    res.end();
-    
+    return res.status(204).end(); // Aucune donnée à renvoyer, mais OK (status 204)
 });
 
-userRouter.post("/toto", (req: Request, res: Response)=>{
-    res.send("Not implemented");
-});
