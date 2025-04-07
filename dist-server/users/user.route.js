@@ -5,36 +5,31 @@ const express_1 = require("express");
 const users_1 = require("./users");
 let users = [...users_1.users];
 exports.userRouter = (0, express_1.Router)();
-//localhost:3000/users ?departement= "" pour trouver a quel departement appartient un user
+// localhost:3000/users?departement="" pour trouver à quel département appartient un user
 exports.userRouter.get("/", (req, res) => {
     const { departement } = req.query;
     if (departement) {
-        res.json(users.filter(user => user.departement.toLowerCase() === departement.toLowerCase()));
+        const filteredUsers = users.filter(user => user.departement.toLowerCase() === departement.toLowerCase());
+        return res.json(filteredUsers); // renvoyer et sortir ici
     }
-    res.json(users);
+    return res.json(users); // renvoyer toute la liste si aucun département n'est spécifié
 });
-//locahost:3000/getUers by Id
+// localhost:3000/users/:userId pour obtenir un utilisateur par ID
 exports.userRouter.get("/:userId", (req, res) => {
     const { userId } = req.params;
     const user = users.find(user => user.id === userId);
     if (user) {
-        res.json(user);
+        return res.json(user); // retourner directement si trouvé
     }
-    res.status(404);
-    res.json({ message: "User not found" });
+    return res.status(404).json({ message: "User not found" }); // renvoyer 404 si non trouvé
 });
-//Delete
+// Supprimer un utilisateur par ID
 exports.userRouter.delete("/:userId", (req, res) => {
     const { userId } = req.params;
     const user = users.find((user) => user.id === userId);
     if (!user) {
-        res.status(404);
-        res.send();
+        return res.status(404).json({ message: "User not found" }); // Retourner une erreur 404 si l'utilisateur n'est pas trouvé
     }
     users = users.filter((user) => user.id !== userId);
-    res.status(204);
-    res.end();
-});
-exports.userRouter.post("/toto", (req, res) => {
-    res.send("Not implemented");
+    return res.status(204).end(); // Aucune donnée à renvoyer, mais OK (status 204)
 });
