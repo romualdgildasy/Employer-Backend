@@ -1,9 +1,13 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response, Router, json,urlencoded } from 'express';
 import { users as userList } from './users';
+
 
 let users = [...userList];
 
 export const userRouter = Router();
+const JsonP = json();
+const bodyParser = urlencoded()
+
 
 // localhost:3000/users?departement="" pour trouver à quel département appartient un user
 userRouter.get("/", (req: Request, res: Response) => {
@@ -41,5 +45,14 @@ userRouter.delete("/:userId", (req: Request, res: Response) => {
 
     users = users.filter((user) => user.id !== userId);
     return res.status(204).end(); // Aucune donnée à renvoyer, mais OK (status 204)
+});
+
+userRouter.post("/",bodyParser,JsonP, (req:Request, res:Response)=> {
+    const {departement,name,level} = req.body;
+    const id = crypto.randomUUID()
+    const user = {id,departement,name,level}
+    users = [...users, user]
+    res.status(201);
+    return res.json(user);
 });
 
