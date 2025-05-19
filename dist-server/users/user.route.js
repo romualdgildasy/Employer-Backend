@@ -5,6 +5,8 @@ const express_1 = require("express");
 const users_1 = require("./users");
 let users = [...users_1.users];
 exports.userRouter = (0, express_1.Router)();
+const JsonP = (0, express_1.json)();
+const bodyParser = (0, express_1.urlencoded)();
 // localhost:3000/users?departement="" pour trouver à quel département appartient un user
 exports.userRouter.get("/", (req, res) => {
     const { departement } = req.query;
@@ -32,4 +34,12 @@ exports.userRouter.delete("/:userId", (req, res) => {
     }
     users = users.filter((user) => user.id !== userId);
     return res.status(204).end(); // Aucune donnée à renvoyer, mais OK (status 204)
+});
+exports.userRouter.post("/", bodyParser, JsonP, (req, res) => {
+    const { departement, name, level } = req.body;
+    const id = crypto.randomUUID();
+    const user = { id, departement, name, level };
+    users = [...users, user];
+    res.status(201);
+    return res.json(user);
 });
