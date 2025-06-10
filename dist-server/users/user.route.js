@@ -2,44 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userRouter = void 0;
 const express_1 = require("express");
+const user_controller_1 = require("./user.controller");
 const users_1 = require("./users");
 let users = [...users_1.users];
 exports.userRouter = (0, express_1.Router)();
 const JsonP = (0, express_1.json)();
 const bodyParser = (0, express_1.urlencoded)();
+const userController = (0, user_controller_1.userControllerFactory)();
 // localhost:3000/users?departement="" pour trouver à quel département appartient un user
-exports.userRouter.get("/", (req, res) => {
-    const { departement } = req.query;
-    if (departement) {
-        const filteredUsers = users.filter(user => user.departement.toLowerCase() === departement.toLowerCase());
-        return res.json(filteredUsers); // renvoyer et sortir ici
-    }
-    return res.json(users); // renvoyer toute la liste si aucun département n'est spécifié
-});
+exports.userRouter.get("/", userController.getAllUsers);
 // localhost:3000/users/:userId pour obtenir un utilisateur par ID
-exports.userRouter.get("/:userId", (req, res) => {
-    const { userId } = req.params;
-    const user = users.find(user => user.id === userId);
-    if (user) {
-        return res.json(user); // retourner directement si trouvé
-    }
-    return res.status(404).json({ message: "User not found" }); // renvoyer 404 si non trouvé
-});
+exports.userRouter.get("/:userId", userController.getUserById);
 // Supprimer un utilisateur par ID
-exports.userRouter.delete("/:userId", (req, res) => {
-    const { userId } = req.params;
-    const user = users.find((user) => user.id === userId);
-    if (!user) {
-        return res.status(404).json({ message: "User not found" }); // Retourner une erreur 404 si l'utilisateur n'est pas trouvé
-    }
-    users = users.filter((user) => user.id !== userId);
-    return res.status(204).end(); // Aucune donnée à renvoyer, mais OK (status 204)
-});
-exports.userRouter.post("/", bodyParser, JsonP, (req, res) => {
-    const { departement, name, level } = req.body;
-    const id = crypto.randomUUID();
-    const user = { id, departement, name, level };
-    users = [...users, user];
-    res.status(201);
-    return res.json(user);
-});
+exports.userRouter.delete("/:userId", userController.deleteUser);
+exports.userRouter.post("/", bodyParser, JsonP, userController.createUser);
