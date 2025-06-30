@@ -1,6 +1,8 @@
+export type Departement = "IT" | "HR" | "Marketing" | "Sourcing";
+export type Level = "J" | "S" | "M";
 export interface User {
     id: string,
     name: string,
-    departement: "IT" | "HR" | "Marketing" | "sourcing",
-    level: "j" | "S" | "M"
+    departement: Departement,
+    level: Level,
 } 

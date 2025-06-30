@@ -1,27 +1,21 @@
-import { Request, Response, Router, json,urlencoded } from 'express';
+import { Request, Response, } from 'express';
 import { users as userList } from './users';
-import crypto from 'crypto'; 
+
+import { userServiceFactory } from './users.service';
 let users = [...userList];
 
-
+const userService = userServiceFactory()
 export function userControllerFactory() {
      return {
         getAllUsers: (req: Request, res: Response) => {
             const { departement } = req.query;
-            if (departement) {
-                const filteredUsers = users.filter(user =>
-                    user.departement.toLowerCase() === (departement as string).toLowerCase()
-                );
-                return res.json(filteredUsers); // renvoyer et sortir ici
-            }
-        
-            return res.json(users); // renvoyer toute la liste si aucun département n'est spécifié
+            const users = userService.getUsers(departement as string | undefined);
+            res.json(users); // renvoyer toute la liste si aucun département n'est spécifié
         },
 
         getUserById:(req: Request, res: Response) => {
             const { userId } = req.params;
-            const user = users.find(user => user.id === userId);
-        
+            const user = userService.getUserById(userId)
             if (user) {
                 return res.json(user); // retourner directement si trouvé
             }
@@ -31,21 +25,20 @@ export function userControllerFactory() {
 
         deleteUser:(req: Request, res: Response) => {
             const { userId } = req.params;
-            const user = users.find((user) => user.id === userId);
-        
+            const user = userService.getUserById(userId);
+            // Vérifier si l'utilisateur existe
+            // Si l'utilisateur n'existe pas, retourner une erreur 404
             if (!user) {
                 return res.status(404).json({ message: "User not found" }); // Retourner une erreur 404 si l'utilisateur n'est pas trouvé
             }
-        
-            users = users.filter((user) => user.id !== userId);
+            userService.deleteUser(userId); // Appeler le service pour supprimer l'utilisateur
             return res.status(204).end(); // Aucune donnée à renvoyer, mais OK (status 204)
         },
 
         createUser:(req:Request, res:Response)  => {
         const {departement,name,level} = req.body;
-        const id = crypto.randomUUID()
-        const user = {id,departement,name,level}
-        users = [...users, user]
+        const userData = {departement,name,level}
+        const user = userService.createUser(userData);
         res.status(201);
         return res.json(user);
         },

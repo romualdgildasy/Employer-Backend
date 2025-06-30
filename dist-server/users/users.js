@@ -6,7 +6,7 @@ exports.users = [
         id: "b52",
         name: "Alice Komar",
         departement: "IT",
-        level: "j"
+        level: "J"
     },
     {
         id: "a34e",
@@ -22,8 +22,8 @@ exports.users = [
     },
     {
         id: "b52d",
-        name: "pauline Lecroix",
-        departement: "sourcing",
-        level: "j"
+        name: "Pauline Lecroix",
+        departement: "Sourcing",
+        level: "J"
     }
 ];
