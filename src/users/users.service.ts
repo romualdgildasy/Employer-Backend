@@ -1,17 +1,13 @@
-import { users as userList } from './users';
+
 import { Departement, Level } from './user.model';
-let users = [...userList];
+import { userRepositoryFactory } from './user.repository';
+
+
+const userRepository = userRepositoryFactory
 export function userServiceFactory() {
     return {
         getUsers:(departement? :string) => {
-          if (departement) {
-              return users.filter(
-                (user) =>
-                    user.departement.toLowerCase() === 
-                (departement as string).toLowerCase()
-            );
-          }
-          return users;
+          return userRepository.getAll(departement);
         },
 
         getUserById:(userId : string) => {
