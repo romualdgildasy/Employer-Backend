@@ -3,7 +3,7 @@ import { userRepositoryFactory } from './user.repository';
 import { users as userList } from './users';
 let users = [...userList];
 
-const userRepository = userRepositoryFactory
+const userRepository = userRepositoryFactory();
 export function userServiceFactory() {
     return {
         getUsers: (departement?: string) => {
