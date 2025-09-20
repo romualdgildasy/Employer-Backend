@@ -1,21 +1,21 @@
-
 import { Departement, Level } from './user.model';
 import { userRepositoryFactory } from './user.repository';
-
+import { users as userList } from './users';
+let users = [...userList];
 
 const userRepository = userRepositoryFactory
 export function userServiceFactory() {
     return {
-        getUsers:(departement? :string) => {
-          return userRepository.getAll(departement);
+        getUsers: (departement?: string) => {
+            return userRepository.getAll(departement);
         },
 
         getUserById:(userId : string) => {
-            return  users.find(user => user.id === userId);
+            return  userRepository.getById(userId);  
         },
 
         deleteUser :(userId : string)=> {
-            users = users.filter((user) => user.id !== userId);
+            userRepository.delete(userId);
         },
 
         createUser:(userData: {
@@ -26,8 +26,9 @@ export function userServiceFactory() {
             const id : string = crypto.randomUUID();
             const {departement, name, level } = userData;
             const user = { id, departement, name, level };
-            users = [...users, user];
-            return user;
+           // users = [...users, user];
+           userRepository.create(user);
+            return userRepository.getById(id);
         }
 
 };    

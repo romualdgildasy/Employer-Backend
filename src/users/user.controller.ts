@@ -11,7 +11,7 @@ export function userControllerFactory() {
             const { departement } = req.query;
             const users = userService.getUsers(departement as string | undefined);
             res.json(users); // renvoyer toute la liste si aucun département n'est spécifié
-        },
+        },  
 
         getUserById:(req: Request, res: Response) => {
             const { userId } = req.params;
@@ -19,7 +19,6 @@ export function userControllerFactory() {
             if (user) {
                 return res.json(user); // retourner directement si trouvé
             }
-        
             return res.status(404).json({ message: "User not found" }); // renvoyer 404 si non trouvé
         },
 
