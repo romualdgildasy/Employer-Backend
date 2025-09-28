@@ -1,7 +1,15 @@
 import { User } from './user.model';
 import { users as userList } from './users';
 let users = [...userList];
-export function userRepositoryFactory(){
+
+export interface UserRepository  {
+    getAll: (departement?: string | undefined) => User[];
+    getById: (userId: string) => User | undefined;
+    delete: (userId: string) => void;
+    create: (user: User) => void;
+}
+
+export function userRepositoryFactory() : UserRepository {
     return {
         getAll: (departement?: string) => { 
             if(departement){

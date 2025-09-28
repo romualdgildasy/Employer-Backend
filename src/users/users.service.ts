@@ -1,10 +1,17 @@
-import { Departement, Level } from './user.model';
-import { userRepositoryFactory } from './user.repository';
-import { users as userList } from './users';
-let users = [...userList];
+import { Departement, Level, User } from './user.model';
+import { UserRepository} from './user.repository';
 
-const userRepository = userRepositoryFactory();
-export function userServiceFactory() {
+export interface UserService {
+    getUsers: (departement?: string | undefined) => User[];
+    getUserById: (userId: string) => User | undefined;
+    deleteUser: (userId: string) => void;
+    createUser: (userData: {
+        departement: Departement;
+        name: string;
+        level: Level;
+    }) => User | undefined;
+}
+export function userServiceFactory( userRepository: UserRepository) : UserService {
     return {
         getUsers: (departement?: string) => {
             return userRepository.getAll(departement);

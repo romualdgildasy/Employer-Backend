@@ -1,11 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userControllerFactory = userControllerFactory;
-const users_1 = require("./users");
-const users_service_1 = require("./users.service");
-let users = [...users_1.users];
-const userService = (0, users_service_1.userServiceFactory)();
-function userControllerFactory() {
+function userControllerFactory(userService) {
     return {
         getAllUsers: (req, res) => {
             const { departement } = req.query;

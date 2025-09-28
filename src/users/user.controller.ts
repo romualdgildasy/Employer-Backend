@@ -1,11 +1,7 @@
 import { Request, Response, } from 'express';
-import { users as userList } from './users';
+import { UserService } from './users.service';
 
-import { userServiceFactory } from './users.service';
-let users = [...userList];
-
-const userService = userServiceFactory()
-export function userControllerFactory() {
+export function userControllerFactory(userService : UserService) {
      return {
         getAllUsers: (req: Request, res: Response) => {
             const { departement } = req.query;

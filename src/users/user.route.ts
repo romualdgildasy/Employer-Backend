@@ -1,16 +1,17 @@
-import { Request, Response, Router, json, urlencoded } from 'express';
+import {Router, json, urlencoded } from 'express';
 import { userControllerFactory } from './user.controller';
-import { users as userList } from './users';
+import { userRepositoryFactory } from './user.repository';
+import { userServiceFactory } from './users.service';
 
-let users = [...userList];
 
 export const userRouter = Router();
 const JsonP = json();
 const bodyParser = urlencoded();
 
-const userController = userControllerFactory();
-
-
+// creation de dependances
+const userRepository = userRepositoryFactory();
+const userService = userServiceFactory(userRepository)
+const userController = userControllerFactory(userService);
 
 
 // localhost:3000/users?departement="" pour trouver à quel département appartient un user
@@ -22,5 +23,5 @@ userRouter.get("/:userId", userController.getUserById);
 // Supprimer un utilisateur par ID
 userRouter.delete("/:userId", userController.deleteUser);
 
-userRouter.post("/",bodyParser,JsonP, userController.createUser);
+userRouter.post("/", bodyParser, JsonP, userController.createUser);
 
