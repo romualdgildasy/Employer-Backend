@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userControllerFactory = userControllerFactory;
+const scheval_1 = require("@rblmdst/scheval");
 function userControllerFactory(userService) {
     return {
         getAllUsers: (req, res) => {
@@ -30,6 +31,29 @@ function userControllerFactory(userService) {
         createUser: (req, res) => {
             const { departement, name, level } = req.body;
             const userData = { departement, name, level };
+            const validatorConfig = {
+                departement: {
+                    type: ["string", "The user departement must be a string"],
+                    required: ["The user departement is required"],
+                    enum: [["IT", "HR", "Marketing", "Sourcing"], "The user departement must be take one of the following values:'IT', 'HR', 'SOURCING', 'MARKRTING'"]
+                },
+                name: {
+                    type: ["string", "The user name must be a string"],
+                    required: ["The user name is required"],
+                },
+                level: {
+                    type: ["string", "The user departement must be a string"],
+                    required: ["The user departement is required"],
+                    enum: [["J", "M", "S"], "The user departement must be take one of the following values:'S', 'J', 'M'"]
+                }
+            };
+            //cretaion de valiation de données
+            const validator = (0, scheval_1.createValidator)(validatorConfig);
+            const valiationErrors = validator.validate(userData);
+            if (valiationErrors.length) {
+                res.status(400);
+                return res.json(valiationErrors);
+            }
             const user = userService.createUser(userData);
             res.status(201);
             return res.json(user);
