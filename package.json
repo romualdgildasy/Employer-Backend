@@ -18,6 +18,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "@rblmdst/scheval": "^1.1.0",
     "@types/express": "^4.17.21",
     "express": "^4.21.2"
   }
