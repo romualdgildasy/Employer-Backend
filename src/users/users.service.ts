@@ -2,14 +2,14 @@ import { Departement, Level, User } from './user.model';
 import { UserRepository} from './user.repository';
 
 export interface UserService {
-    getUsers: (departement?: string | undefined) => User[];
-    getUserById: (userId: string) => User | undefined;
+    getUsers: (departement?: string) => User[];
+    getUserById: (userId: string) => User | null;
     deleteUser: (userId: string) => void;
     createUser: (userData: {
         departement: Departement;
         name: string;
         level: Level;
-    }) => User | undefined;
+    }) => User | null;
 }
 export function userServiceFactory( userRepository: UserRepository) : UserService {
     return {
@@ -18,7 +18,7 @@ export function userServiceFactory( userRepository: UserRepository) : UserServic
         },
 
         getUserById:(userId : string) => {
-            return  userRepository.getById(userId);  
+            return  userRepository.getById(userId) || null;  
         },
 
         deleteUser :(userId : string)=> {

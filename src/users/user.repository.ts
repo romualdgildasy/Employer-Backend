@@ -3,8 +3,8 @@ import { users as userList } from './users';
 let users = [...userList];
 
 export interface UserRepository  {
-    getAll: (departement?: string | undefined) => User[];
-    getById: (userId: string) => User | undefined;
+    getAll: (departement?: string) => User[];
+    getById: (userId: string) => User | null;
     delete: (userId: string) => void;
     create: (user: User) => void;
 }
@@ -22,7 +22,7 @@ export function userRepositoryFactory() : UserRepository {
         },
 
         getById: (userId: string)=>{
-            return users.find((user)=>user.id === userId);
+            return users.find((user)=>user.id === userId) || null;
         },
 
         delete : (userId:string) =>{

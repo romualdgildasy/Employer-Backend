@@ -31,33 +31,34 @@ export function userControllerFactory(userService : UserService) {
         },
 
         createUser:(req:Request, res:Response)  => {
-        const {departement,name,level} = req.body;
-        const userData = {departement,name,level};
-        const validatorConfig= {
-            departement:{
-                type:["string", "The user departement must be a string"],
-                required:["The user departement is required"],
-                enum : [[ "IT" ,"HR" , "Marketing" , "Sourcing"], "The user departement must be take one of the following values:'IT', 'HR', 'SOURCING', 'MARKRTING'"]
+            const {departement,name,level} = req.body;
+            const userData = {departement,name,level};
+            const validatorConfig= {
+                departement:{
+                    type:["string", "The user departement must be a string"],
+                    required:["The user departement is required"],
+                    enum : [[ "IT" ,"HR" , "Marketing" , "Sourcing"], "The user departement must be take one of the following values:'IT', 'HR', 'SOURCING', 'MARKRTING'"]
+                },
+                name:{
+                    type:["string", "The user name must be a string"],
+                    required:["The user name is required"],
+                },
+                level:{
+                    type:["string", "The user departement must be a string"],
+                    required:["The user departement is required"],
+                    enum : [[ "J" ,"M" , "S"], "The user departement must be take one of the following values:'S', 'J', 'M'"]
+                }
+            }
+        //  cretaion de valiation de données
+            const validator = createValidator(validatorConfig)
+            const valiationErrors = validator.validate(userData)
+                if (valiationErrors.length) {
+                    res.status(400)
+                    return res.json(valiationErrors);
+                } 
+            const user = userService.createUser(userData);
+            res.status(201);
+            return res.json(user);
             },
-            name:{
-                type:["string", "The user name must be a string"],
-                required:["The user name is required"],
-            },
-            level:{
-                type:["string", "The user departement must be a string"],
-                required:["The user departement is required"],
-                enum : [[ "J" ,"M" , "S"], "The user departement must be take one of the following values:'S', 'J', 'M'"]}
-        }
-        //cretaion de valiation de données
-        const validator = createValidator(validatorConfig)
-        const valiationErrors = validator.validate(userData)
-        if (valiationErrors.length) {
-            res.status(400)
-            return res.json(valiationErrors);
-        } 
-        const user = userService.createUser(userData);
-        res.status(201);
-        return res.json(user);
-        },
      };
 }
